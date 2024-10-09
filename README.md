@@ -1,4 +1,5 @@
 # 🚀 Crypto Price & Standard Deviation API 📊
+**Hosted Link - (https://koinx-assignment-g6y6.onrender.com/) KoinX-Assingment
 
 Welcome to the **Crypto Price & Deviation API** project! This application allows you to retrieve the current prices of various cryptocurrencies and calculate their standard deviation based on historical data. It features two main tasks: fetching real-time crypto data and calculating the price deviation for specific coins.
 
