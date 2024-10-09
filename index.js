@@ -16,9 +16,21 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
+  const updateCryptoData = async (data) => {
+    latestCryptoData = data;
+
+    const jsonData = JSON.stringify(data);
+    memcachedClient.set('latestCryptoData', jsonData, { expires: 7200 }, (err) => {
+      if (err) {
+        console.error('Error saving data to Memcached:', err);
+      } else {
+        console.log('data updated in Memcached.');
+      }
+    });
+  };
 
   fetchCryptoData().then(async (data) => {
-    
+    await updateCryptoData(data);
   }).catch((error) => {
     console.error('Error during initial fetch:', error);
   });
@@ -26,6 +38,7 @@ mongoose.connect(process.env.MONGO_URI)
   cron.schedule('0 */2 * * *', async () => {
     console.log('Fetching crypto data:');
     const data = await fetchCryptoData();
+    await updateCryptoData(data);
   });
 
 app.listen(PORT, () => {
