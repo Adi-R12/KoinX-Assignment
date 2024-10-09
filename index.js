@@ -106,6 +106,19 @@ mongoose.connect(process.env.MONGO_URI)
     }
   });
 
+  app.get('/', async (req, res) => {
+    try {
+      res.status(200).send(`
+        <h1>Welcome to the Crypto Price & Deviation API 📊</h1>
+        <p>This API allows you to fetch real-time cryptocurrency prices and calculate the standard deviation of prices based on historical data.</p>
+        <p>For more details, visit the <a href="https://github.com/Adi-R12/KoinX-Assignment">GitHub repository</a>.</p>
+      `);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
