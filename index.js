@@ -41,6 +41,39 @@ mongoose.connect(process.env.MONGO_URI)
     await updateCryptoData(data);
   });
 
+  app.get('/stats', async (req, res) => {
+    const { coin } = req.query;
+
+    memcachedClient.get('latestCryptoData', (err, val) => {
+      if (err || !val) {
+        console.log('Fetching crypto data from variable');
+        const coinData = latestCryptoData.find(c => c.name.toLowerCase() === coin.toLowerCase());
+    
+        if (!coinData) {
+          return res.status(404).json({ error: 'Data not found' });
+        }
+
+        res.json({
+          price: coinData.price,
+          market_cap: coinData.market_cap,
+          "24hChange": coinData.change_24h
+        });
+      } else {
+        const cachedData = JSON.parse(val.toString());
+        const coinData = cachedData.find(c => c.name.toLowerCase() === coin.toLowerCase());  
+  
+        if (!coinData) {
+          return res.status(404).json({ error: 'Data not found' });
+        }
+        res.json({
+          price: coinData.price,
+          market_cap: coinData.market_cap,
+          "24hChange": coinData.change_24h
+        });
+      }
+    });
+  });
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
