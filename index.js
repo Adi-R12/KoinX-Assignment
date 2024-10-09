@@ -4,6 +4,7 @@ import cron from 'node-cron';
 import fetchCryptoData from './api/fetchCryptoData.js';
 import { configDotenv } from 'dotenv';
 import memjs from 'memjs'; 
+import Price from './Models/cryptoPriceSchema.js';
 configDotenv();
 
 const app = express();
@@ -73,6 +74,8 @@ mongoose.connect(process.env.MONGO_URI)
       }
     });
   });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
