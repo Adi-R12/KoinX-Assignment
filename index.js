@@ -23,6 +23,11 @@ mongoose.connect(process.env.MONGO_URI)
     console.error('Error during initial fetch:', error);
   });
 
+  cron.schedule('0 */2 * * *', async () => {
+    console.log('Fetching crypto data:');
+    const data = await fetchCryptoData();
+  });
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
