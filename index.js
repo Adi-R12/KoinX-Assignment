@@ -82,6 +82,29 @@ mongoose.connect(process.env.MONGO_URI)
     const variance = prices.reduce((acc, price) => acc + Math.pow(price - mean, 2), 0) / n;
     return Math.sqrt(variance);
   };
+  
+  app.get('/deviation', async (req, res) => {
+    const { coin } = req.query;
+    if (!coin) {
+      return res.status(400).json({ error: 'Enter valid coin name' });
+    }
+  
+    try {
+      // const prices=[
+      //   { price: 40000 },
+      //   { price: 45000 },
+      //   { price: 50000 }
+      // ]
+      const prices = await Price.find({ coin }).sort({ timestamp: -1 }).limit(100).select('price');
+      const priceList = prices.map(record => record.price);
+      const deviation = calculateStandardDeviation(priceList);
+
+      res.json({ deviation: deviation.toFixed(2) });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
